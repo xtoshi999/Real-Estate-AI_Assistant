@@ -119,18 +119,18 @@ Real estate agents often spend significant time manually matching clients with p
 | Version | Features | Status | Implementation Details |
 |---------|----------|--------|------------------------|
 | V1 | Basic property search with single-turn conversations | Completed | Used `langchain_experimental.agents.agent_toolkits.pandas.base.create_pandas_dataframe_agent` for direct data querying |
-| V2 | Multi-turn conversations with enhanced search capabilities | Current | Implements RAG with `ConversationalRetrievalChain`, supports multiple LLM models (OpenAI GPT, Llama) |
+| V2 | Multi-turn conversations with enhanced search capabilities | Completed | Implements RAG with `ConversationalRetrievalChain`, supports multiple LLM models (OpenAI GPT, Llama) |
+| V3.1 | Asynchronous data processing to prevent UI freezing | Completed | Implemented async handling for database queries |
+| V3.2 | Visual property comparisons | Completed | Added Radar charts, price trends, and amenity matrix in Streamlit UI |
 
-## Planned Enhancements
+## Planned Enhancements (Remaining Tasks)
 
 | Feature ID | Description | Priority | Technical Approach |
 |------------|-------------|----------|-------------------|
-| PE001 | Integration with additional data sources | High | Develop adapters for real estate APIs and additional data formats (Implemented: Base Provider + CSV Adapter) |
-| PE002 | Visual property comparisons | Medium | Implement side-by-side comparison components in Streamlit UI (Completed: V3.2 - Radar charts, price trends, amenity matrix) |
-| PE003 | Geographical mapping of properties | Medium | Integrate with mapping services to visualize property locations |
+| PE001 | Integration with additional data sources (APIs) | High | Develop adapters for real estate APIs (CSV adapter already implemented) |
+| PE003 | Geographical mapping of properties | Medium | Integrate with mapping services (e.g., Mapbox, Folium) to visualize property locations |
 | PE004 | Sentiment analysis for property descriptions | Low | Add sentiment analysis module using specialized LLM fine-tuning |
 | PE005 | Support for international property markets | Medium | Enhance data processing to handle different market formats and currencies |
-| PE006 | Fix "get db freeze" issue | High | Implement asynchronous data processing to prevent UI freezing (Completed: V3.1) |
 
 ## Success Metrics
 
@@ -147,8 +147,8 @@ Real estate agents often spend significant time manually matching clients with p
 | Phase | Description | Status | Deliverables |
 |-------|-------------|--------|-------------|
 | Phase 1 | Initial prototype development | Completed | V1 with basic functionality |
-| Phase 2 | Integration of multiple data sources and LLM models | In progress | V2 with enhanced conversational capabilities |
-| Phase 3 | Enhanced user experience and additional features | Future | Visual comparisons, mapping, sentiment analysis |
+| Phase 2 | Integration of multiple data sources and LLM models | Completed | V2 with enhanced conversational capabilities |
+| Phase 3 | Enhanced user experience and additional features | In Progress | Visual comparisons (Done), mapping, sentiment analysis |
 | Phase 4 | Production deployment and optimization | Future | Performance optimizations, scalability improvements |
 
 ## Constraints and Limitations
