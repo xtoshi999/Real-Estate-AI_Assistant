@@ -7,9 +7,10 @@
 #>
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path (Split-Path $PSScriptRoot)
-$ComposeFile = Join-Path $ProjectRoot "deploy/compose/docker-compose.yml"
-$EnvFile = Join-Path $ProjectRoot ".env"
-$EnvExample = Join-Path $ProjectRoot ".env.example"
+$ComposeDir = Join-Path $ProjectRoot "deploy/compose"
+$ComposeFile = Join-Path $ComposeDir "docker-compose.yml"
+$EnvFile = Join-Path $ComposeDir ".env"
+$EnvExample = Join-Path $ComposeDir ".env.example"
 
 function Step($m) { Write-Host "`n  $m" -ForegroundColor Cyan }
 function Ok($m)   { Write-Host "  OK  $m" -ForegroundColor Green }
@@ -48,7 +49,7 @@ if ($hasLlm) { Ok "LLM key found" } else { Warn "No LLM key — app will run in 
 
 # ── Build and start ───────────────────────────────────────────────────
 Step "[4/5] Building and starting containers..."
-Push-Location $ProjectRoot
+Push-Location $ComposeDir
 docker compose -f $ComposeFile --env-file $EnvFile up -d --build 2>&1 | ForEach-Object {
     if ($_ -match "error|Error|ERROR|failed|FAILED") { Write-Host "  X $_" -ForegroundColor Red }
     else { Write-Host "  $_" -ForegroundColor DarkGray }
