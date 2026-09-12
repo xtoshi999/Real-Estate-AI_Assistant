@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.5.2] - 2026-09-12
+
+### Security (HIGH/CRITICAL CVE fix batch)
+- **next 16.2.12 → 16.3.4** (PR #309) — CRITICAL CVE fixes:
+  - GHSA-p293-qw3h-jr36 / CVE-2026-75604 (CVSS 9.0): Unauthenticated Remote Code
+    Execution on Windows-hosted servers.
+  - GHSA-2xp9-vwfh-vxw4: Unauthenticated Remote Code Execution in Image
+    Optimization API when AVIF files are used.
+- **sharp 0.34.5 → 0.35.4** (PR #309) — HIGH CVE fixes:
+  - GHSA-rgj7-g3m4-5g8c: sharp libheif vulnerabilities (GHSA-g89c-p67h-r497 +
+    GHSA-2jg2-4ch7-h545).
+- **gitpython ≥3.1.57 → ≥3.1.61** (PR #300) — CRITICAL + HIGH CVE fixes:
+  - CVE-2026-78676 / GHSA-284h-m62q-gf8w (CVSS 9.8): Dormant multi-line
+    git-config values corrupted into live injected directives.
+  - CVE-2026-78675 / GHSA-7833-fr7j-v32q (CVSS 8.4): Arbitrary local file
+    content disclosure via `[include]` directive in untrusted `.gitconfig`.
+  - CVE-2026-78677 / GHSA-8mcc-hrx5-hvxc (CVSS 7.5): `clone_from()`/`clone()`
+    omit `--separate-git-dir` from unsafe_git_clone_options.
+  - CVE-2026-78678 / GHSA-5xxx-qhh7-9287 + CVE-2026-78679 / GHSA-3wxw-xv34-2frg
+    (CVSS 6.5): TagReference.create positional reference bypass + incomplete
+    unsafe_git_revision_options denylist.
+- **js-yaml 3.15.1 → 3.15.2 + 4.3.1 → 4.3.2** (PRs #310, #311) — HIGH CVE fixes:
+  - CVE-2026-84375 / GHSA-2883-xcg3-v3hh (CVSS 7.5): maxTotalMergeKeys does
+    not limit CPU use for empty merge sources (network-DoS via unbounded
+    merge-key CPU).
+  - Hard-limit merge sequence size to 100.
+
+### Changed
+- All three version files bumped to `5.1.5.2`:
+  - `apps/api/pyproject.toml`
+  - `package.json` (root monorepo)
+  - `apps/web/package.json`
+- 13 routine dependabot PRs closed per frozen-policy matrix
+  (dependency bumps below critical/high → blocked).
+- 3 Dependabot alerts dismissed via API:
+  - `extract-zip` CVE-2026-19693 (HIGH, dev-only transitive via
+    `@puppeteer/browsers`, never loaded in production) → `not_used`.
+  - `joi` CVE-2026-84367 + CVE-2026-84368 (LOW, CVSS 3.7 prototype pollution,
+    below frozen-policy threshold, public demo does not exercise untrusted
+    schemas) → `tolerable_risk`.
+
+### Notes
+- All merges under frozen-policy exception per `CLAUDE.md` §"Public Repo
+  Maintenance" (HIGH/CRITICAL CVE bumps may merge without permission wait).
+- CI on the js-yaml merge commit hit the GitHub Actions runner dead-runner
+  pattern (`e2e` Playwright job hung on `BlobNotFound`); the run was cancelled
+  manually, blocking `workflow_run` → `deploy.yml` env-protection (HTTP 409
+  on deployment creation since cancelled CI ≠ success). Staging advance
+  recovers automatically on the next push that triggers fresh CI (the
+  `e2e` job's `continue-on-error: true` keeps the run `success` despite
+  any `e2e` failure; the natural timeout is `timeout-minutes: 25`).
+- `render.yaml` pins both Render services to `dev` branch — staging
+  auto-deploys on any push to `dev`, independent of GitHub Actions.
+- v5.1.5.2 supersedes v5.1.5.1 (which was the post-release patch bumping
+  pyproject to align with web at `5.1.5`). This release adds the four
+  CVE-fix PRs and brings all three version fields to `5.1.5.2`.
+
 ## [5.1.5] - 2026-09-06
 
 ### Added
