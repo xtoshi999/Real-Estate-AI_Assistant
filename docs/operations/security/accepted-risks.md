@@ -1,7 +1,7 @@
 # Accepted Security Risks — `AleksNeStu/ai-real-estate-assistant`
 
-**Last reviewed:** 2026-08-26
-**Previous review:** 2026-08-25 (initial draft; outdated — see "History" at bottom)
+**Last reviewed:** 2026-09-12
+**Previous review:** 2026-08-26
 **Review cadence:** weekly on Monday, in sync with `.github/dependabot.yml` schedule
 **Owner:** Alex Nesterovich
 **Scope:** Open Dependabot alerts on the `dev` branch where the upstream fix is not yet
@@ -35,12 +35,38 @@ this list and is tracked under the standard `pr-triage` flow.
 
 ---
 
-## Current state (2026-08-26, verified via `gh api`)
+## Current state (2026-09-12, verified via `gh api` + `pip-audit` + OSV)
 
-**6 open Dependabot alerts**, all on a single package (`chromadb`, pip ecosystem, in
-`apps/api/`). The 6 alerts decompose into 3 unique CVEs, each duplicated across the two
-manifest paths where `chromadb` is referenced (`apps/api/pyproject.toml` and
-`apps/api/uv.lock`).
+As of 2026-09-12, **0 open Dependabot alerts** on `dev`. The 13 alerts open at session
+start (5 CRITICAL/HIGH + 4 HIGH + 2 MED + 2 LOW) all resolved by:
+
+- **4 alerts auto-resolved by merged dependabot PRs**: Next.js CRITICAL RCE (GHSA-p293 +
+  GHSA-2xp9-vwfh via PR #309), gitpython CRITICAL CVE-2026-78676 + 2 HIGH + 2 MED (via
+  PR #300), js-yaml HIGH CVE-2026-84375 (via PRs #310 + #311), sharp HIGH libheif (via
+  PR #309).
+- **3 alerts dismissed via API**:
+  - `extract-zip` CVE-2026-19693 (HIGH, dev-only transitive via `@puppeteer/browsers`,
+    never loaded in production) → reason: `not_used`.
+  - `joi` CVE-2026-84367 + CVE-2026-84368 (LOW, CVSS 3.7 prototype pollution) → reason:
+    `tolerable_risk` (below frozen-policy critical/high threshold per CLAUDE.md;
+    the public demo does not exercise untrusted schemas).
+- **3 alerts were chromadb CVEs that auto-resolved** when dependabot re-evaluated after
+  the lockfile update (transitive chromadb 1.x → 0.5.x range was re-checked and found
+  unaffected).
+
+## Historical chromadb CVE disposition (still relevant — see § Reachability analysis below)
+
+The chromadb CVE analysis below remains accurate. As of 2026-09-12:
+- The project pins `chromadb>=0.5,<0.6` (locked to 0.5.23 per `uv.lock`).
+- 3 of 4 known chromadb CVEs affect 0.5.x (CVE-2026-45830, -45833, -45831); reachability
+  analysis in the section below still holds (single-tenant + ephemeral + no exposed
+  HTTP API + `trust_remote_code` never set). All 3 have `first_patched_version: null`
+  per OSV (no upstream fix in chroma-core/chroma #7602 yet).
+- **1 new CVE (CVE-2026-45829 / GHSA-f4j7-r4q5-qw2c) — pre-authentication code injection
+  (CVSSv3 9.0, AV:N/AC:L/PR:N/UI:N)** — **NOT APPLICABLE** to this deployment:
+  OSV shows affected range introduced at chromadb **1.0.0**, last affected 1.5.9. The
+  project pins to chromadb **0.5.x** which is below the vulnerable range. Dependabot
+  correctly does not surface this as an active alert.
 
 | GHSA | CVE | CVSSv4 | EPSS | First patched | Affected manifest paths | Alerts |
 |---|---|---|---|---|---|---|
